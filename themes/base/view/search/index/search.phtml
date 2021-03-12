@@ -1,0 +1,279 @@
+<?php
+/*
+ * Copyright BibLibre, 2016
+ * Copyright Daniel Berthereau, 2017-2020
+ *
+ * This software is governed by the CeCILL license under French law and abiding
+ * by the rules of distribution of free software.  You can use, modify and/ or
+ * redistribute the software under the terms of the CeCILL license as circulated
+ * by CEA, CNRS and INRIA at the following URL "http://www.cecill.info".
+ *
+ * As a counterpart to the access to the source code and rights to copy, modify
+ * and redistribute granted by the license, users are provided only with a
+ * limited warranty and the software's author, the holder of the economic
+ * rights, and the successive licensors have only limited liability.
+ *
+ * In this respect, the user's attention is drawn to the risks associated with
+ * loading, using, modifying and/or developing or reproducing the software by
+ * the user in light of its specific status of free software, that may mean that
+ * it is complicated to manipulate, and that also therefore means that it is
+ * reserved for developers and experienced professionals having in-depth
+ * computer knowledge. Users are therefore encouraged to load and test the
+ * software's suitability as regards their requirements in conditions enabling
+ * the security of their systems and/or data to be ensured and, more generally,
+ * to use and operate it in the same conditions as regards security.
+ *
+ * The fact that you are presently reading this means that you have had
+ * knowledge of the CeCILL license and that you accept its terms.
+ */
+
+/**
+ * @var \Zend\View\Renderer\PhpRenderer $this
+ * @var \Omeka\Api\Representation\SiteRepresentation $site
+ * @var \Search\Query $query
+ * @var \Search\Response $response
+ * @var array $sortOptions
+ * @var array $facets
+ * @var bool $isPartial Allow to use this partial in admin board when true.
+ */
+$plugins = $this->getHelperPluginManager();
+$translate = $plugins->get('translate');
+$translatePlural = $plugins->get('translatePlural');
+$assetUrl = $plugins->get('assetUrl');
+$partial = $plugins->get('partial');
+$skipFormAction = !empty($skipFormAction);
+
+// Used in case of a redirect of item-set/show to search, when used like item/browse.
+$itemSetId = $this->params()->fromRoute('item-set-id');
+
+$this->headLink()->appendStylesheet($assetUrl('css/search.css', 'Search'));
+$this->headScript()->appendFile($assetUrl('js/search.js', 'Search'), 'text/javascript', ['defer' => 'defer']);
+?>
+<section class="section breadcrumb-section">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+      <ul>
+        <li><a href="<?php echo $site->url(); ?>">Home</a></li>
+        <li><?php echo $translate("Search"); ?></li>
+      </ul>
+    </nav>
+  </div>
+</section>
+<?php if (empty($isPartial)): ?>
+<section class="section">
+  <div class="container" role="main">
+  <?php endif; ?>
+
+  <?php if ($itemSetId): ?>
+      <?php $itemSet = $this->api()->read('item_sets', ['id' => $itemSetId])->getContent(); ?>
+      <?php $this->vars()->offsetSet('itemSet', $itemSet); ?>
+      <?php $this->vars()->offsetSet('resourceType', 'item_sets'); // TODO Check if really needed. ?>
+      <?php $this->htmlElement('body')->appendAttribute('class', 'search-page item-set resource browse'); ?>
+      <?= $this->pageTitle($itemSet->displayTitle(), 2) ?>
+      <h1 class="title is-2 is-family-secondary"><?= $translate('Item set') ?></h1>
+      <div class="metadata">
+          <?= $itemSet->displayValues() ?>
+      </div>
+      <div class="item-set-items">
+          <h2 class="title is-3 is-family-secondary"><?= $translate('Items') ?></h2>
+      </div>
+  <?php else: ?>
+      <?php $this->htmlElement('body')->appendAttribute('class', 'search-page resource browse'); ?>
+      <h1 class="title is-2 is-family-secondary"><?php echo $translate("Search"); ?></h1>
+  <?php endif; ?>
+
+  <!--<div class="columns advanced-search closed">
+    <div class="column is-7">
+      <div class="content">
+        <form class="has-icons-right" action="" id="search-form">
+          <div class="field has-addons">
+            <input class="input"  name="q" type="text" id="free" placeholder="Search resources" value="<?php echo $query->getQuery();?>"   aria-label="<?php echo $translate('Search'); ?>">
+            <input name="sort" type="hidden" value="<?php echo $query->getSort();?>" />
+            <input name="q" id="test" type="hidden" value="" />
+          </div>
+          <?php
+            /*$references = $site->getServiceLocator()->get('ControllerPluginManager')->get('references');
+
+            $titels1 = $this->references()->list('mmfc:preferred_labels',array(),array('raw'=>true));
+            $titels2 = $this->references()->list('mmfc:nonpreferred_labels',array(),array('raw'=>true));
+
+            $titels = array_merge($titels1['o:references'],$titels2['o:references']);
+
+            $shelfmarks1 = $this->references()->list('mmfc:msIdNo',array(),array('raw'=>true));
+            $shelfmarks2 = $this->references()->list('mmfc:msCollectionName',array(),array('raw'=>true));
+            $shelfmarks = array_merge($shelfmarks1['o:references'],$shelfmarks2['o:references']);
+
+            $place1 = $this->references()->list('mmfc:msOriginCountry',array(),array('raw'=>true));
+            $place2 = $this->references()->list('mmfc:msOrigPlaceRegion',array(),array('raw'=>true));
+            $place3 = $this->references()->list('mmfc:msOrigPlaceSettlement',array(),array('raw'=>true));
+            $place = array_merge($place1['o:references'],$place2['o:references'],$place3['o:references']);
+
+            $persons1 = $this->references()->list('mmfc:msProvenanceOwner',array(),array('raw'=>true));
+            $persons = $persons1['o:references'];*/
+          ?>
+
+          <!--<div class="field is-horizontal">
+            <div class="field-body">
+              <div class="field">
+                <p class="control is-expanded">
+                  <select id="titel" class="selectize" placeholder="Titel">
+                    <option value=""></option>
+                    <?php foreach($titels as $key=>$value):?>
+                      <option value="<?php echo $value['val'];?>">
+                        <?php echo $value['val'];?>
+                      </option>
+                    <?php endforeach;?>
+                  </select>
+                </p>
+              </div>
+              <div class="field">
+                <p class="control is-expanded">
+                  <select id="shelfmark" class="selectize" placeholder="Shelfmark">
+                    <option value=""></option>
+                    <?php foreach($shelfmarks as $key=>$value):?>
+                      <option value="<?php echo $value['val'];?>">
+                        <?php echo $value['val'];?>
+                      </option>
+                    <?php endforeach;?>
+                  </select>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="field is-horizontal">
+            <div class="field-body">
+              <div class="field">
+                <p class="control is-expanded">
+                  <select id="personal" class="selectize" placeholder="Personal names">
+                    <option value=""></option>
+                    <?php foreach($persons as $key=>$value):?>
+                      <option value="<?php echo $value['val'];?>">
+                        <?php echo $value['val'];?>
+                      </option>
+                    <?php endforeach;?>
+                  </select>
+                </p>
+              </div>
+              <div class="field">
+                <p class="control is-expanded">
+                  <select id="place" class="selectize" placeholder="Place of origin">
+                    <option value=""></option>
+                    <?php foreach($place as $key=>$value):?>
+                      <option value="<?php echo $value['val'];?>">
+                        <?php echo $value['val'];?>
+                      </option>
+                    <?php endforeach;?>
+                  </select>
+                </p>
+              </div>
+            </div>
+          </div>
+          <button id="collect" class="button is-primary is-outlined">
+            <span class="icon is-large">
+              <i class="fas fa-search"></i>
+            </span>
+            <span>Search</span>
+          </button>
+          <button type="submit" class="button is-primary is-outlined">
+            <span class="icon is-large">
+              <i class="fas fa-search"></i>
+            </span>
+            <span>Search</span>
+          </button>
+        </div>
+    </form>
+    </div>
+  </div>-->
+<?php //echo $query->getQuery().'&sort='.$query->getSort().'&'.json_encode($query->getFilters());?>
+  <?php if (isset($response)): ?>
+  <div class="columns">
+      <div class="column is-one-quarter">
+        <div class="content">
+        <?= $this->searchForm($searchPage, null, $skipFormAction) ?>
+        </div>
+      </div>
+      <?= $partial('search/facets', ['searchPage' => $searchPage, 'query' => $query, 'response' => $response]) ?>
+      <div class="column is-three-quarter">
+          <?php if ($response->getTotalResults()): ?>
+              <?= $partial('search/results-header', [
+                  'query' => $query,
+                  'response' => $response,
+                  'sortOptions' => $sortOptions,
+              ]) ?>
+
+              <?php $itemSetsCount = $response->getResourceTotalResults('item_sets'); ?>
+              <?= $partial('search/resource-list', [
+                  'site' => $site,
+                  'title' => sprintf($translatePlural('%s item set', '%s item sets', $itemSetsCount), $itemSetsCount),
+                  'response' => $response,
+                  'resourceName' => 'item_sets',
+              ]) ?>
+
+              <?php $itemsCount = $response->getResourceTotalResults('items'); ?>
+              <?= $partial('search/resource-list', [
+                  'site' => $site,
+                  'title' => sprintf($translatePlural('%s item', '%s items', $itemsCount), $itemsCount),
+                  'response' => $response,
+                  'resourceName' => 'items',
+              ]) ?>
+
+              <?= $partial('search/results-footer', [
+                  'query' => $query,
+                  'response' => $response,
+                  'sortOptions' => $sortOptions,
+              ]) ?>
+
+          <?php elseif (empty($query) && empty($itemSetId)): ?>
+
+              <div class="noresults"><?= $translate('Fill a query and get results.') ?></div>
+
+          <?php elseif (empty($query) && $itemSetId): ?>
+
+              <div class="noresults"><?= $translate('This item set has no items.') ?></div>
+
+          <?php else: ?>
+
+              <div class="noresults"><?= $translate('Your query returned no results') ?></div>
+
+          <?php endif; ?>
+
+      </div>
+
+
+  </div>
+
+  <?php else: ?>
+
+  <div class="search-results-wrapper">
+      <div class="search-results">
+          <div class="noresults"><?= $translate('An error occured and your query returned no results.') ?></div>
+      </div>
+  </div>
+
+  <?php endif; ?>
+
+  <?php if (empty($isPartial)): ?>
+  </div>
+  <?php endif; ?>
+  </div>
+  <script>
+  $(document).ready(function() {
+    // Check for click events on the navbar burger icon
+
+    $('.selectize').selectize([create = false,multiple = true,selectOnTab = true]);
+
+    $( "#collect" ).click(function(e) {
+      e.preventDefault();
+      var vals = [];
+      vals.push($("#free").val());
+      vals.push($("#titel").val());
+      vals.push($("#shelfmark").val());
+      vals.push($("#personal").val());
+      vals.push($("#place").val());
+      vals = vals.filter(function(v){return v!==''});
+      $('#test').val(vals.join(' OR '));
+      $('#search-form').submit();
+    });
+  });
+  </script>
+</section>

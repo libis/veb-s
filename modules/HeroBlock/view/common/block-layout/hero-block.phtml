@@ -1,0 +1,48 @@
+<?php
+  $url = '';
+  if($attachments):
+    $media = $attachments[0]->media();
+
+    $url = '';
+    if($media):
+      $url = $media->thumbnailUrl('large');
+      $url = str_replace('http:', '', $url);
+    endif;
+  endif;
+?>
+<section class="hero is-primary is-bold"  style="background:url(<?php echo $url;?>) no-repeat center center;background-size: cover;">
+  <div class="hero-body">
+    <div class="container">
+      <?php if($block->dataValue('sec_title')):?>
+         <h2 class="subtitle is-size-6"><?php echo $block->dataValue('sec_title');?></h2>
+      <?php endif;?>
+      <h1 class="title is-family-secondary is-1"><?php echo $block->dataValue('title');?></h1>
+      <div class="content hero-text">
+        <?php echo $block->dataValue('text');?>
+        <form class="has-icons-right" action="<?php echo $block->page()->site()->url();?>/objects">
+          <div class="field has-addons">
+            <div class="control">
+              <input class="input" type="text" name="q" id="q" placeholder="Search objects">
+            </div>
+            <div class="control">
+              <button type="submit" class="button is-primary">
+                <span class="icon is-large">
+                  <i class="fas fa-search"></i>
+                </span>
+              </button>
+            </div>
+
+          </div>
+        </form>
+        <div class="link">
+          <a class="button is-primary" href="<?php echo $block->page()->site()->url().$block->dataValue('link');?>">
+            <span><?php echo $block->dataValue('link_text');?></span>
+            <span class="icon is-small">
+              <i class="fas fa-angle-right"></i>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+   </div>
+ </section>

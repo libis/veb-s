@@ -1,0 +1,461 @@
+/* main: style.scss */
+html{
+  scroll-behavior: smooth
+}
+
+body{
+  background: #f5f3f3;
+}
+
+.subtitle{
+  font-weight: 600;
+}
+
+.navbar{
+  background: #dddddd;
+  border-bottom: 2px solid $primary;
+
+  .navbar-item{
+    color: $text;
+  }
+
+  .navbar-item img {
+    max-height: 1.9rem;
+  }
+  .navigation{
+    display:flex;
+    flex-grow: 0;
+    flex-shrink: 0;
+    align-items: center;
+
+    li{
+      display: block;
+      line-height: 1.5;
+      padding: 0.5rem 0.75rem;
+      position: relative;
+      flex-grow: 0;
+      flex-shrink: 0;
+      height: 100%;
+      font-size:0.9rem;
+      font-weight: 400;
+
+      @media screen and (min-width: 1024px){
+        align-items: center;
+        display: flex;
+      }
+
+      a{
+        color: #6f6b6b;
+      }
+    }
+  }
+}
+
+//modal-menu
+.field.has-addons .control:not(:last-child){
+  width: 100%;
+}
+
+.modal{
+  .input{
+    padding:1rem;
+    border-radius: 0;
+  }
+
+  .navigation{
+    padding-top: 1rem;
+
+    li{
+      padding-top: 0.5rem;
+      font-family: $family-secondary;
+      font-style: italic;
+      font-size: 1.2rem;
+
+      ul{
+        padding-top: 0;
+        padding-left: 1rem;
+      }
+    }
+    a{
+      color:white;
+    }
+  }
+}
+
+
+#content{
+  //padding: 2rem 0;
+}
+
+//breadcrumb
+.breadcrumb-section{
+  padding-top: 2rem;
+  padding-bottom: 0rem;
+
+  .breadcrumb{
+    margin-bottom: 0.5rem;
+    a{
+      padding-left: 0;
+    }
+
+    li::before {
+      padding-right: 0.75em;
+    }
+  }
+}
+
+
+.sorting{
+  button{
+    line-height: 0 !important;
+    height: 2.3rem;
+  }
+
+  select{
+    padding:0.5rem;
+  }
+}
+
+//catches blocks without templates like html & pageTitle
+.no-section{
+  h2{
+    font-size: 2.5rem;
+    font-family: $family-secondary;
+  }
+}
+
+.exhibit-nav{
+  background: #ccc;
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+//hero
+.hero-body{
+   background: rgba(#333333,0.2);
+  //background: linear-gradient(355deg, rgba(74,44,64,0.3) 0%, rgba(74,44,64,0.8) 100%);
+  .subtitle, .title {
+    color: #fff !important;
+  }
+
+  .hero-text{
+    max-width: 600px;
+    color:white;
+    font-weight: 600;
+
+    .link{
+      margin-top: 1rem;
+      text-align: right;
+
+      a{
+        font-weight: bold;
+
+        i{
+          margin-right: 6px;
+        }
+      }
+    }
+  }
+
+  .input::placeholder, .textarea::placeholder, .select select::placeholder{
+    color: $text;
+  }
+}
+
+//card
+.card,.featured-block,.box{
+  box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.08);
+}
+.card-top{
+  padding: 1rem 1.5rem;
+  box-shadow: none;
+}
+
+.card-content{
+  padding: 0rem 1.5rem 1.5rem 1.5rem;
+}
+
+.card-footer-item{
+  justify-content: right;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.card-bg-img-2{
+  height: 200px;
+}
+.card-bg-img-3{
+  height: 250px;
+}
+
+//overlay columns
+.featured-block{
+  min-height: 320px;
+  position: relative;
+  padding: 2rem;
+  transition: all 400ms ease-out;
+
+  &:hover{
+    opacity: 0.8;
+  }
+
+  a{color:white;}
+
+  .content-type{
+    font-weight: 600;
+  }
+
+  .overlay{
+    position: absolute;
+    bottom: 2rem;
+
+    .title{
+      max-width: 350px;
+    }
+
+    p, .subtitle{
+      color:white;
+      font-weight: 600;
+    }
+  }
+}
+
+.datering{
+  font-size: 0.8rem;
+}
+
+.section{
+  background: #fff;
+  padding: 2rem 1.5rem 2rem 1.5rem;
+  padding: 2rem 0 2rem 0;
+  margin: 0 1.5rem 0 1.5rem;
+}
+.color-section{
+  background:#f0f0f0;
+  padding:3rem 1.5rem !important;
+  margin-bottom:3rem;
+}
+
+.pagination{
+  justify-content: end;
+  span{
+    padding-left: 0.8rem;
+    font-style: italic;
+  }
+  form{
+    padding: 0 5px;
+    input{
+      padding:3px;
+    }
+
+    span{
+      font-style: normal;
+      padding:0;
+    }
+  }
+
+  .pagination-next, .pagination-previous{
+    padding:0.2rem 0.4rem;
+    margin-left: 0.6rem;
+    margin-right: 0.6rem;
+    height: auto;
+    font-size: 0.9rem;
+  }
+}
+
+//search
+.facets{
+  padding: 1rem;
+  background: #f1f1f1;
+
+  ul{
+    font-size: 0.8rem;
+    padding-left: 0;
+  }
+
+  .search-facet > h3{
+    margin-bottom: 0.2rem;
+  }
+  .search-facet-items{
+    margin-bottom: 0.5rem;
+  }
+
+  .more-link, .less-link{
+    border-top: 1px solid #ccc;
+    padding-top:0.5rem;
+    margin-top: 0.5rem;
+    i{
+      margin-right: 0.3rem;
+      line-height: 1.6;
+    }
+  }
+
+  a{
+    display: flex;
+
+    &::before{
+      width: auto !important;
+      margin-right: 0.3rem;
+    }
+  }
+
+
+}
+
+.list {
+    background-color: transparent;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.placeholder-thumbnail{
+  width:100%;
+  background: #ccc;
+  padding-top: 100%;
+}
+
+.resource-metadata{
+  padding: 0.5rem 0;
+}
+
+.list{
+  display:block !important;
+
+  .grid-col{
+    width:100%;
+    display: block;
+
+    .grid-item{
+      display:flex;
+      align-items: center;
+      .resource-thumbnail{
+        padding-right:1rem;
+        max-width: 100px;
+
+        .placeholder-thumbnail{
+          min-width:84px;
+          background: #aaa;
+          height: 84px;
+        }
+      }
+    }
+  }
+}
+
+.grid{
+  .resource-thumbnail{
+      img{
+        width:100%;
+      }
+
+      a{
+        line-height: 0;
+      }
+  }
+
+  .description{
+    display: none;
+  }
+}
+
+.metadata-box{
+  background:white;
+  padding:1rem;
+
+  h4{
+    line-height: 1.5;
+  }
+}
+
+//item-show
+.item{
+  .metadata{
+    h2{
+      color: $primary;
+      font-weight: 200;
+      text-transform: uppercase;
+      font-size: 1.5rem;
+      border-bottom: 1px solid $primary;
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    h4{
+      font-size: 0.9rem;
+    }
+
+    .column{
+      padding-top: 0.2rem;
+      padding-bottom: 0.3rem;
+    }
+  }
+
+  .identification{
+    padding:1.5rem 0;
+    font-size: 0.9rem;
+  }
+
+  .mscontainer{
+    padding: 1.5rem 0;
+
+
+    .Dimensions .value{
+      display: inline;
+
+    }
+  }
+
+  .indented{
+    margin-left: 1.5rem;
+    font-size: 0.9rem;
+
+    .column{
+      padding-top:0;
+    }
+  }
+
+  .floating-nav{
+    background: #eee;
+    padding: 1rem;
+    z-index: 100;
+    width: inherit;
+    width: 100%;
+    position: sticky;
+  	top: 6rem;
+    text-transform: uppercase;
+
+    a {
+      color: $text;
+
+      &:hover{
+        color: $primary;
+        text-decoration: underline;
+      }
+    }
+
+    ul ul li{
+
+    }
+  }
+
+
+}
+
+.footer{
+  padding: 0;
+  color: white;
+
+  min-height: 300px;
+
+  .footer-section{
+    background: #716a66;
+  }
+
+  .footer-section-2{
+    background: transparent;
+  }
+
+  a{
+    color: white;
+  }
+}

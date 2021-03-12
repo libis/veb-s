@@ -1,0 +1,147 @@
+<?php
+$translate = $this->plugin('translate');
+$escape = $this->plugin('escapeHtml');
+$labelInfo = $this->setting('property_label_information');
+$not = array('Description','Is Version Of','Is Part Of','Language','Provenance');
+$notalt = array('Description');
+?>
+
+<?php foreach ($templateProperties as $term => $property): ?>
+  <?php
+    $template = $property->template()->label();
+    if($property->isPrivate()):
+      continue;
+    endif;
+    $propertyData = '';
+    if(isset($values[$property->property()->term()])):
+      $propertyData = $values[$property->property()->term()];
+    else:
+      continue;
+    endif;
+    $comment = '';
+    $comment = $property->alternateComment();
+    $extra_class = '';$notitle=false;
+    if (strpos($comment, 'indent') !== false) {
+        $extra_class="indented";
+    }
+    if (strpos($comment, 'displayed under') !== false) {
+        $extra_class="indented";
+        $notitle = true;
+    }
+  ?>
+  <?php if(!in_array($propertyData['property']->label(),$not) && !in_array($propertyData['alternate_label'],$notalt)):?>
+    <div class="columns <?php echo $extra_class;?>">
+      <div class="column is-4">
+      <?php if(!$notitle):?>
+
+        <h4 class="title is-6">
+        <?php $label = "";?>
+        <?php if ($propertyData['alternate_label']): ?>
+          <?php $label = $escape($propertyData['alternate_label']);?>
+          <?php echo $escape($propertyData['alternate_label']); ?>
+        <?php endif; ?>
+        </h4>
+
+      <?php endif; ?>
+        </div>
+      <div class="column">
+        <div class="values">
+
+        <?php foreach ($propertyData['values'] as $value): ?>
+            <?php
+            $valueType = $value->type();
+            $class = ['value'];
+            if ('resource' == $valueType || strpos($valueType, 'resource') !== false) {
+                $class[] = 'resource';
+                $class[] = $escape($value->valueResource()->resourceName());
+            } elseif ('uri' == $valueType) {
+                $class[] = 'uri';
+            }
+            if (!$value->isPublic()) {
+                $class[] = 'private';
+            }
+            ?>
+            <div class="<?php echo implode(' ', $class); ?>" lang="<?php echo $escape($value->lang()); ?>">
+                <?php if ($language = $value->lang()): ?>
+                <span class="language"><?php echo $language; ?></span>
+                <?php endif; ?>
+                <?php
+                $text = $value.'';
+
+                $vals = explode('$$',$text);
+
+                if(sizeof($vals) > 1):
+                  if($label == 'Annotation'):
+                    echo implode(', ',$vals);
+                  else:
+                    $array['Provenance'] = ["Owner","Date","Evidence","Transcription","Locus","Language","Description","Comments"];
+                    $array['DICTA PROBATORIA'] = ["Type","Fol","Transcription"];
+                    $array['Cover title'] = ["Cover title","Type","Date"];
+                    ?>
+
+                    <div class="columns is-multiline" style="margin-top:0rem;margin-bottom:1rem;">
+                    <?php if($label == 'DICTA PROBATORIA'):?>
+                      <div class="column is-3" style="font-size:0.8rem;padding:0.2rem 0.75rem;">
+                        <strong>Type</strong>
+                      </div>
+                      <div class="column is-9" style="font-size:0.8rem;padding:0.2rem 0.75rem;">
+                        <?php echo $vals[0]; ?> (<?php echo $vals[1]; ?>)
+                      </div>
+                      <div class="column is-3" style="font-size:0.8rem;padding:0.2rem 0.75rem;">
+                        <strong>Transcription</strong>
+                      </div>
+                      <div class="column is-9" style="font-size:0.8rem;padding:0.2rem 0.75rem;">
+                        <?php echo $vals[2]; ?>
+                      </div>
+                    <?php elseif($label == 'Cover title')  :?>
+                      <div class="column is-12" style="padding:0 0.75rem 0.2rem 0.75rem;">
+                        <?php echo $vals[0];?>
+                      </div>
+                      <div class="column is-3" style="font-size:0.8rem;padding:0.2rem 0.75rem;">
+                        <strong>Type</strong>
+                      </div>
+                      <div class="column is-9" style="font-size:0.8rem;padding:0.2rem 0.75rem;">
+                        <?php echo $vals[1]; ?>
+                      </div>
+                      <div class="column is-3" style="font-size:0.8rem;padding:0.2rem 0.75rem;">
+                        <strong>Date</strong>
+                      </div>
+                      <div class="column is-9" style="font-size:0.8rem;padding:0.2rem 0.75rem;">
+                        <?php echo $vals[2]; ?>
+                      </div>
+
+                    <?php elseif($label == 'Provenance'):?>
+                      <?php $i = 0;?>
+
+                      <?php foreach($vals as $val):?>
+                        <?php if($val):?>
+                          <div class="column is-3" style="font-size:0.8rem;padding:0.2rem 0.75rem;">
+                            <strong><?php echo $array[$label][$i]; ?></strong>
+                          </div>
+                          <div class="column is-9" style="font-size:0.8rem;padding:0.2rem 0.75rem;">
+                            <?php echo $val;?>
+                          </div>
+                        <?php endif;?>
+                        <?php $i++;?>
+                      <?php endforeach;?>
+                    <?php endif;?>
+                    </div>
+                  <?php endif;?>
+                <?php elseif($label == 'Dimensions'):?>
+                     <?php echo $text;?>
+                     <?php
+                      echo ' x '.$values['mmfc:msBindingDimWidth']['values'][0];
+                      echo ' x '.$values['mmfc:msBindingDimDepth']['values'][0];
+                     ?>
+                <?php else:
+                  echo $text;
+                endif;
+                ?>
+                <?php //echo $value; ?>
+            </div>
+        <?php endforeach; ?>
+        </div>
+      </div>
+    </div>
+  <?php endif;?>
+<?php endforeach; ?>

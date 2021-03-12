@@ -1,0 +1,16 @@
+version: '2'
+
+services:
+
+  omeka-s:
+    build: ./
+    ports:
+      - "9009:80"
+    volumes:
+      - ./modules/:/var/www/html/veb/modules/
+      - ./themes/:/var/www/html/veb/themes/
+      - ./files/:/var/www/html/veb/files/
+      - ./config/:/var/www/html/veb/config/
+      - ./htaccess:/var/www/html/veb/.htaccess
+      - ./imagemagick-policy.xml:/var/www/html/veb/imagemagick-policy.xml
+    restart: "no"

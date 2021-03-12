@@ -1,0 +1,21 @@
+<?php
+/**
+ * @var \Zend\View\Renderer\PhpRenderer $this
+ * @var \Omeka\Api\Representation\SitePageBlockRepresentation $block
+ * @var string $heading
+ * @var string $params
+ */
+
+// Fill this partial as you want. Use params if any.
+// The view is available, so any feature can be used.
+// Warning: check security of any user input.
+
+$escape = $this->plugin('escapeHtml');
+?>
+
+<div class="block block-simple">
+    <?php if (!empty($heading)): ?>
+    <h2><?= $escape($heading) ?></h2>
+    <?php endif; ?>
+    <?= $escape($params) ?>
+</div>

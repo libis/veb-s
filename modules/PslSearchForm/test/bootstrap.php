@@ -1,0 +1,10 @@
+<?php declare(strict_types=1);
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use OmekaTestHelper\Bootstrap;
+
+Bootstrap::bootstrap(__DIR__);
+Bootstrap::loginAsAdmin();
+Bootstrap::enableModule('Search');
+Bootstrap::enableModule('PslSearchForm');
